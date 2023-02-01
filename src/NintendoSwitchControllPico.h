@@ -1,0 +1,109 @@
+#pragma once
+
+#include "stdint.h"
+#include "string.h"
+#include "Adafruit_TinyUSB.h"
+
+#define CUSTOM_DESCRIPTOR \
+    0x05, 0x01, \
+    0x09, 0x05, \
+    0xa1, 0x01, \
+    0x15, 0x00,\
+    0x25, 0x01,\
+    0x35, 0x00,\
+    0x45, 0x01,\
+    0x75, 0x01,\
+    0x95, 0x10,\
+    0x05, 0x09,\
+    0x19, 0x01,\
+    0x29, 0x10,\
+    0x81, 0x02,\
+    0x05, 0x01,\
+    0x25, 0x07,\
+    0x46, 0x3b, 0x01,\
+    0x75, 0x04,\
+    0x95, 0x01,\
+    0x65, 0x14,\
+    0x09, 0x39,\
+    0x81, 0x42,\
+    0x65, 0x00,\
+    0x95, 0x01,\
+    0x81, 0x01,\
+    0x26, 0xff, 0x00,\
+    0x46, 0xff, 0x00,\
+    0x09, 0x30,\
+    0x09, 0x31,\
+    0x09, 0x32,\
+    0x09, 0x35,\
+    0x75, 0x08,\
+    0x95, 0x04,\
+    0x81, 0x02,\
+    0x06, 0x00, 0xff,\
+    0x09, 0x20,\
+    0x95, 0x01,\
+    0x81, 0x02,\
+    0x0a, 0x21, 0x26,\
+    0x95, 0x08,\
+    0x91, 0x02,\
+    0xc0       \
+
+enum class Button : uint16_t
+{
+  Y       = 0x0001,
+  B       = 0x0002,
+  A       = 0x0004,
+  X       = 0x0008,
+  L       = 0x0010,
+  R       = 0x0020,
+  ZL      = 0x0040,
+  ZR      = 0x0080,
+  MINUS   = 0x0100,
+  PLUS    = 0x0200,
+  LCLICK  = 0x0400,
+  RCLICK  = 0x0800,
+  HOME    = 0x1000,
+  CAPTURE = 0x2000
+};
+
+enum class Hat : uint8_t
+{
+  UP         = 0x00,
+  UP_RIGHT   = 0x01,
+  RIGHT      = 0x02,
+  RIGHT_DOWN = 0x03,
+  DOWN       = 0x04,
+  DOWN_LEFT  = 0x05,
+  LEFT       = 0x06,
+  LEFT_UP    = 0x07,
+  CENTER     = 0x08
+};
+
+typedef struct
+{
+  uint16_t Button;
+  uint8_t Hat;
+  uint8_t LX;
+  uint8_t LY;
+  uint8_t RX;
+  uint8_t RY;
+  uint8_t Dummy;
+} USB_JoystickReport_Input_t;
+
+class NintendoSwitchControllPico_
+{
+  private:
+    USB_JoystickReport_Input_t _joystickInputData;
+  public:
+    NintendoSwitchControllPico_(void);
+    bool sendReport(void);
+    void pressButton(Button button_num);
+    void releaseButton(Button button_num);
+    void pressHatButton(Hat hat);
+    void releaseHatButton(void);
+    void sendReportOnly(USB_JoystickReport_Input_t t_joystickInputData);
+    void setStickTiltRatio(int16_t lx_per, int16_t ly_per,
+                           int16_t rx_per, int16_t ry_per);
+};
+
+NintendoSwitchControllPico_ &SwitchController();
+extern Adafruit_USBD_HID usb_hid;
