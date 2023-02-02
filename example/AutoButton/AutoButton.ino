@@ -16,6 +16,5 @@ void setup() {
 }
 
 void loop() {
-  if ( !usb_hid.ready() ) return;
   pushButton(Button::A, 100, 1);
 }

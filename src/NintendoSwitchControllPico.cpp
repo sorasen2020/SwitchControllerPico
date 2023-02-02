@@ -7,6 +7,7 @@ NintendoSwitchControllPico_::NintendoSwitchControllPico_(void)
 
 bool NintendoSwitchControllPico_::sendReport(void)
 {
+  while ( !usb_hid.ready() );
   return usb_hid.sendReport(0, &_joystickInputData, sizeof(USB_JoystickReport_Input_t));
 }
 
